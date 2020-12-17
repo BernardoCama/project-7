@@ -1,0 +1,49 @@
+***Launch Topology 
+
+sudo mn --custom /vagrant/project-7/ringTopo.py  --mac --topo mytopo --controller=remote,ip=10.0.2.15,port=6633 --switch ovs,protocols=OpenFlow13
+
+
+***Launch Controller
+
+# Implementation 1 ‐ reactive
+ryu-manager flowmanager/flowmanager.py /vagrant/project-7/Node_failure_reactive.py --observe-link
+
+# Implementation 1 – proactive
+ryu-manager flowmanager/flowmanager.py /vagrant/project-7/Node_failure_proactive.py --observe-link
+
+pingall
+
+
+***Delay and Pkt loss Statistics
+
+python /.../Delay_pkt_loss_statisitcs_live.py
+
+xterm h1
+
+# to a specific host hi
+ping 10.0.0.i -O | tee -a /vagrant/project-7/dati.txt 
+
+# to pingall
+bash /vagrant/project-7/ping_variable.sh 
+
+switch s2 stop
+
+# to visualize pkt loss statistics 
+Ctrl+C in h1
+
+
+***Bandwidth Statistics
+
+python /.../Bandwidth_statistics_live.py
+
+xterm h3
+
+# server in h3
+iperf -s
+
+xterm h1
+
+# tcp connection with host h3 dst_port 5001, 100 requests, each every 1 seconds
+iperf -c 10.0.0.3 -t 100 -i 1 | tee -a /vagrant/project-7/dati.txt 
+
+switch s2 stop
